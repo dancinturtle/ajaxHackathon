@@ -137,13 +137,17 @@ def logout():
 
 @app.route("/username", methods=['POST'])
 def username():
-    query = "SELECT * FROM users WHERE username = %(name)s;"
-    data = {"name":request.form['username']}
+    print(request.form)
+    query = "SELECT username from users WHERE users.username = %(user)s"
+    data = {
+        'user': request.form['username']
+    }
     mysql = c('ajaxWall')
     result = mysql.query_db(query, data)
     if result:
-        return render_template('username.html', passed = False)
-    return render_template("username.html", passed = True)
+        return render_template('username.html', found=True)
+    else:
+        return render_template('username.html', found=False)
 
 def check_login():
     if 'userid' not in session or session['userid'] == None:
