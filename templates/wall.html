@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Wall</title>
+    {% include 'headers.html' %}
+</head>
+
+<body>
+    <nav >
+        <div >
+
+            <ul >
+                
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+            <ul >
+
+                <li>Welcome {{session['username']}}</li>
+            </ul>
+        </div>
+    </nav>
+    <div >
+        {% with m = get_flashed_messages(with_categories = True) %}
+        {% if m %}
+        {% for c, g in m %}
+        {% if c == "register" %} 
+        <p >{{g}}</p>
+        {% endif %}
+        {% if c == "comment" %}
+        <p >{{g}}</p>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <h3>Messages</h3>
+        <form action="/messages" method="POST">
+
+            {% if not data %}
+            <p>No messages to display at this time. Try creating one!</p>
+            {% endif %}
+            {% with m = get_flashed_messages(with_categories = True) %}
+            {% if m %}
+            {% for c, g in m %}
+            {% if c == "save" or c == "nosave" %}
+            <p >{{g}}</p>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <div >
+                <label for="message">Type your message here:</label>
+                <input type="text" id="message" name="message" {% with m = get_flashed_messages(with_categories = True) %}
+                {% if m %}
+                {% for c, g in m %}
+            
+                {% if c == "usermsg" %} value = "{{g}} "{% endif %}
+            
+                {% endfor %}
+                {% endif %}
+                {% endwith %}>
+            </div>
+            <button >Submit</button>
+        </form>
+        {% if data %}
+        <div >
+            {% for item in data %}
+            <div>
+                <h6>{{item.message}}</h6>
+                <small>Posted by {{item.username}} -- {{item.created_at}}</small>
+                {% for comment in comments %}
+                {% if comment.msgid == item.id %}
+                <div >
+                    <div>
+
+                    <small>{{comment.comment}} --- {{comment.username}} at {{comment.created_at}}</small>
+                    </div>
+                    
+                </div>
+                {% endif %}
+                {% endfor %}
+                <form action="/comments" method="POST">
+                    <div >
+                        <label for="comment">Type your comment here:</label>
+                        <input type="text" id="comment" name="comment">
+                    </div>
+                    <input type="hidden" value="{{item.id}}" name="msgid">
+                    <button >Comment</button> 
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if pages > 1 %}
+        {% for page in range(1, pages+1) %}
+        <a href="/wall/{{page}}">Page {{page}}</a>
+        {% endfor %}
+        {% endif %}
+        
+    </div>
+</body>
+
+</html>

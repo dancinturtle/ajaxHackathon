@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login and Registration</title>
+   {% include 'headers.html' %}
+</head>
+
+<body>
+    <div class="container">
+        <h3>The messaging app</h3>
+
+        {% with m = get_flashed_messages(with_categories = True) %}
+            {% if m %}
+                {% for c, g in m %}
+                    {% if c == "permission" %}
+                    <p>{{g}}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div>
+            <div>
+                <h5>Register here!</h5>
+                {% with m = get_flashed_messages(with_categories = True) %}
+                    {% if m %}
+                        {% for c, g in m %}
+                            {% if c == "register" %}
+                            <p>{{g}}</p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <form action="/register" method="post" id="regForm">
+                    <div >
+                        <div id="usernamemsg"></div>
+                        <label for="username">Username:</label>
+                        <input id="username" name="username" type="text"
+                        {% with m = get_flashed_messages(with_categories = True) %}
+                        {% if m %}{% for c, g in m %}{% if c == "username" %} value = "{{g}}"{% endif %}{% endfor %}{% endif %}{% endwith %}>
+                    </div>
+                    <div>
+                        <label for="first_name">First Name:</label>
+                        <input id="first_name" name="first_name" type="text" {% with m = get_flashed_messages(with_categories = True) %}
+                        {% if m %}{% for c, g in m %}{% if c == "first_name" %} value = "{{g}}"{% endif %}{% endfor %}{% endif %}{% endwith %}>
+                    </div>
+                    <div>
+                        <label for="last_name">Last Name:</label>
+                        <input id="last_name" name="last_name" type="text" {% with m = get_flashed_messages(with_categories = True) %}
+                        {% if m %}{% for c, g in m %}{% if c == "last_name" %} value = "{{g}}"{% endif %}{% endfor %}{% endif %}{% endwith %}>
+                    </div>
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+            <div >
+                <h5>Login here!</h5>
+                {% with m = get_flashed_messages(with_categories = True) %}
+                    {% if m %}
+                        {% for c, g in m %}
+                            {% if c == "login" %}
+                            <p >{{g}}</p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <form action="/login" method="post">
+                    <div >
+                        <label for="username">Username:</label>
+                        <input id="username" name="username" type="text">
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+        </div>
+        <h4>Find users starting with</h4>
+        <form method="GET" action="/users_noajax" id="searchForm">
+            <div >
+
+                <label for="name">Name</label>
+                <input id="searchName" type="text" name="name">
+            </div>
+            <button type="submit">Search</button>
+
+        </form>
+
+        <div id="results">
+            {% if users %}
+            <ul>
+                {% for user in users %}
+                <li>{{user.first_name}} {{user.last_name}}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+
+    </div>
+
+</body>
+
+</html>
